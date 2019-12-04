@@ -176,10 +176,13 @@ void do_send(osjob_t* j){
     // Check if there is not a current TX/RX job running
     if (LMIC.opmode & OP_TXRXPEND) {
         Serial.println(F("OP_TXRXPEND, not sending"));
-    } else { 
-        unsigned char payload;
-        readValues(&payload);
-        LMIC_setTxData2(1, &payload, 1, 0);
+    } else {
+        uint8_t mydata[10];
+        unsigned char voltage;
+        readValues(&voltage);
+        mydata[0] = voltage;
+        }
+        LMIC_setTxData2(1, &mydata, sizeof(mydata)-1, 0);
         Serial.println(F("Packet queued"));
     }
     // Next TX is scheduled after TX_COMPLETE event.
@@ -278,7 +281,5 @@ void loop() {
     else {
       digitalWrite(13, LOW);
     }
-      
-    os_runloop_once();
-    
+    os_runloop();
 }
