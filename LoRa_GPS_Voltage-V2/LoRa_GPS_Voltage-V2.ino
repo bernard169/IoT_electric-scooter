@@ -38,7 +38,7 @@ TinyLoRa lora = TinyLoRa(3, 8, 4);
 
 // pin the DHT22 is connected to
 
-union{
+union cvt{
   float number;
   byte bytelist[4];
   }floatAsBytes;
@@ -46,7 +46,7 @@ void setup()
 {
   delay(2000);
   Serial.begin(9600);
-  while (! Serial);
+  //while (! Serial);
  
   // Initialize pin LED_BUILTIN as an output
   pinMode(LED_BUILTIN, OUTPUT);
@@ -73,17 +73,40 @@ void loop()
   readValues(&payload);
  
   mydata[0] = payload; //Put Voltage on payload[0]
-  /*
+  
   floatAsBytes.number = 50.4560; //longitude
-  for (int i =0 ; i++ ; i<=3)
-  {
-    mydata[i+1] = (unsigned char)floatAsBytes.bytelist[i];
-  }  
+  
+  Serial.print("Bytes of longitude : ");
+  Serial.print(floatAsBytes.bytelist[0]);
+
+
+  mydata[1]=floatAsBytes.bytelist[0];
+  mydata[2]=floatAsBytes.bytelist[1];
+  mydata[3]=floatAsBytes.bytelist[2];
+  mydata[4]=floatAsBytes.bytelist[3];
+
+  floatAsBytes.number = 15.4560; //lattitude
+  
+  mydata[5]=floatAsBytes.bytelist[0];
+  mydata[6]=floatAsBytes.bytelist[1];
+  mydata[7]=floatAsBytes.bytelist[2];
+  mydata[8]=floatAsBytes.bytelist[3];
+  
+
+
+  /*
+  
+  for (int i =0 ; i++ ; i<=3){
+    mydata[i+1] = floatAsBytes.bytelist[i];
+    Serial.print(floatAsBytes.bytelist[i]);
+  } 
+  Serial.println("");
+  
   floatAsBytes.number = 15.4560; //lattitude
   for (int i = 0 ; i++ ; i<=3){
     mydata[i+5] = (unsigned char)floatAsBytes.bytelist[i];
-  }
-*/
+  }*/
+
   Serial.println("Sending LoRa Data...");
   lora.sendData(mydata, sizeof(mydata), lora.frameCounter);
   Serial.print("Frame Counter: ");Serial.println(lora.frameCounter);
